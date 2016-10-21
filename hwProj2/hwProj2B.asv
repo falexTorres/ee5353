@@ -29,9 +29,12 @@ h3 = double(h3);
 h4 = double(h4);
 h5 = double(h5);
 X = double(X);
-Y1 = myIFFT2(myFFT2(X).*myFFT2(h3));
-Y2 = myIFFT2(myFFT2(X).*myFFT2(h4));
-Y3 = myIFFT2(myFFT2(X).*myFFT2(h5));
+Y1 = ifft2(fft2(X).*fft2(h3));
+Y2 = ifft2(fft2(X).*fft2(h4));
+Y3 = ifft2(fft2(X).*fft2(h5));
+%Y1 = myIFFT2(myFFT2(X).*myFFT2(h1));
+%Y2 = myIFFT2(myFFT2(X).*myFFT2(h2));
+%Y3 = myIFFT2(myFFT2(X).*myFFT2(h3));
 
 % convert results back to tif image
 Y1 = uint8(Y1);
@@ -64,9 +67,9 @@ title('third filtered image');
 subplot(1,2,2);
 imhist(Y3);
 
-Y = Y1;
+Y = 
 filtered1_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M
-Y = Y2;
+
 filtered2_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M
-Y = Y3;
+
 filtered3_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M

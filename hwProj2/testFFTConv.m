@@ -24,8 +24,11 @@ X = double(X);
 Y = myIFFT2(myFFT2(X).*myFFT2(h1));
 
 Y = uint8(Y);
+X = uint8(X);
 
 subplot(1,2,1);
+imshow(X);
+subplot(1,2,2);
 imshow(Y);
 
 % X1 = uint8(X1);

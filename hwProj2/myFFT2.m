@@ -20,11 +20,11 @@ end
 for v = 1:N
    % using result from fft rows
    % do 1d fft on each column
-   col = fft(rowz(:,v));
+   col = fft(rowz(2:M+1,v));
    colz = horzcat(colz, col);
 end
 
-out = colz(2:1:M, 2:1:N);
+out = colz(:, 2:N+1);
 
 end
 

@@ -1,13 +1,9 @@
-% filters image by window convolution of
-% original image and three different kernels
-
-% Read image 
+% Read imshow 
 s_dir = pwd;
 cd Images;
  
 X = imread('aivazovsky78g.tif', 'tif');   
 [N, M] = size(X);
-X = double(X);
 
 cd(s_dir); 
 
@@ -15,37 +11,64 @@ cd(s_dir);
 h1 = (1 / 13) * [0 0 1 0 0; 0 1 1 1 0; 1 1 1 1 1; 0 1 1 1 0; 0 0 1 0 0];
 h2 = (1 / 10) * [0 0 1 0 0; 0 0 1 0 0; 1 1 2 1 1; 0 0 1 0 0; 0 0 1 0 0];
 
-h1 = padarray(h1, [ceil((N - 5)/2), ceil((M - 5)/2)]);
-h1 = double(h1(2:1:n, 2:1:m));
+% windowed convolution filtering method
+filtered1 = myConv2(single(X), single(h1));
+filtered2 = myConv2(single(X), single(h2));
+filtered1 = filtered1(1:N, 1:M);
+filtered2 = filtered2(1:N, 1:M);
 
-h1 = horzcat(h1, zeros(5, M-5));
-h1 = vertcat(h1, zeros(N-5, M));
+% convert results back to uint8
+filtered1 = uint8(filtered1);
+filtered2 = uint8(filtered2);
 
-h1 = double(h1);
-X = double(X);
-%Y = ifft2(fft2(X).*fft2(h1));
-Y = myIFFT2(myFFT2(X).*myFFT2(h1));
+% calculate imshow for (c)
+imshow_c1 = 4 * abs(X - filtered1);
+imshow_c2 = 4 * abs(X - filtered2);
 
-Y = uint8(Y);
+% generate histograms
+% X_histogram = imhist(X);
+% filtered1_histogram = imhist(filtered1);
+% filtered2_histogram = imhist(filtered2);
+% imshow_c1_histogram = imhist(imshow_c1);
+% imshow_c2_histogram = imhist(imshow_c2);
+
+% display imshows
+subplot(1,2,1);
+imshow(X);
+title('original imshow');
+subplot(1,2,2);
+imhist(X);
 
 subplot(1,2,1);
-imshow(Y);
+imshow(filtered1);
+title('filtered1 imshow');
+subplot(1,2,2);
+imhist(filtered1);
 
-% X1 = uint8(X1);
-% X2 = uint8(X2);
-% subplot(1,2,1);
-% imshow(X1);
-% subplot(1,2,2);
-% imshow(X2);
+subplot(1,2,1);
+imshow(filtered2);
+title('filtered2 imshow');
+subplot(1,2,2);
+imhist(filtered2);
 
-% test convolution
-% h1 = padarray(h1, [ceil((N - 5)/2), ceil((M - 5)/2)]);
-% [n, m] = size(h1);
-% h1 = h1(1:1:n-1, 1:1:m-1);
-% H = fft2(single(h1));
-% size(X1)
-% size(H)
-% conv = X1 .* H;
-% result = real(fft2(fft2(conv)));
-% result;
-% filtered = uint8(result);
+subplot(1,2,1);
+imshow(imshow_c1);
+title('(c) first filter');
+subplot(1,2,2);
+imhist(imshow_c1);
+
+subplot(1,2,1);
+imshow(imshow_c2);
+title('(c) second filter');
+subplot(1,2,2);
+imhist(imshow_c2);
+
+% show msre
+Y = filtered1;
+filtered1_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M
+Y = filtered2;
+filtered2_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M
+Y = imshow_c1;
+imshow_c1_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M
+Y = imshow_c2;
+imshow_c2_error = sqrt( sum(sum( (X-Y).*(X-Y) )))/N/M
